@@ -85,4 +85,74 @@ func main() {
 	// 	return
 	// }
 	// fmt.Println(resp.Message)
+
+	// 测试管理员添加教师接口
+	// req := &server.AdminAddTeacherInfoRequest{
+	// 	TeacherId:   "22070302002",
+	// 	TeacherName: "教师2",
+	// }
+	// resp, err := cli.AddTeacher(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp.Message)
+
+	// 测试管理员删除教师接口
+	// req := &server.AdminDeleteTeacherInfoRequest{
+	// 	TeacherId: "22070302002",
+	// }
+	// resp, err := cli.DeleteTeacher(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp.Message)
+
+	// 测试管理员添加课程接口
+	// req := &server.AdminAddCourseInfoRequest{
+	// 	CourseId:   "22070304001",
+	// 	CourseName: "编译原理",
+	// 	TeacherId:  "22070302001",
+	// 	Credit:     3,
+	// }
+	// resp, err := cli.AddCourse(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// }
+	// fmt.Println(resp.Message)
+
+	// 测试管理员删除课程接口
+	// req := &server.AdminDeleteCourseInfoRequest{
+	// 	CourseId: "22070304001",
+	// }
+	// resp, err := cli.DeleteCourse(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp.Message)
+
+	// 测试向学生展示课程的接口
+	// studentId := "01907010109"
+	// req := &server.StudentShowCourseRequest{
+	// 	StudentId: &studentId,
+	// }
+	// resp, err := cli.ShowCourse(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
+
+	// 测试学生选课接口
+	// req := &server.SelectCourseRequest{
+	// 	StudentId: "01907010109",
+	// 	CourseId:  "22070304001",
+	// }
+	// resp, err := cli.SelectCourse(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// }
+	// fmt.Println(resp.Message)
 }

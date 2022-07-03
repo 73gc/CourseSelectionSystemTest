@@ -192,7 +192,7 @@ struct AdminAddCourseInfoRequest {
     1: required string CourseId
     2: required string CourseName
     3: required string TeacherId
-    4: required string Credit
+    4: required double Credit
 }
 
 struct AdminAddCourseInfoResponse {

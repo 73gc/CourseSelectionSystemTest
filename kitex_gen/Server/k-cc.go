@@ -7162,7 +7162,7 @@ func (p *AdminAddCourseInfoRequest) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 4:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.DOUBLE {
 				l, err = p.FastReadField4(buf[offset:])
 				offset += l
 				if err != nil {
@@ -7277,7 +7277,7 @@ func (p *AdminAddCourseInfoRequest) FastReadField3(buf []byte) (int, error) {
 func (p *AdminAddCourseInfoRequest) FastReadField4(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
+	if v, l, err := bthrift.Binary.ReadDouble(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
@@ -7297,10 +7297,10 @@ func (p *AdminAddCourseInfoRequest) FastWriteNocopy(buf []byte, binaryWriter bth
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "AdminAddCourseInfoRequest")
 	if p != nil {
+		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
-		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -7350,8 +7350,8 @@ func (p *AdminAddCourseInfoRequest) fastWriteField3(buf []byte, binaryWriter bth
 
 func (p *AdminAddCourseInfoRequest) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Credit", thrift.STRING, 4)
-	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Credit)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Credit", thrift.DOUBLE, 4)
+	offset += bthrift.Binary.WriteDouble(buf[offset:], p.Credit)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -7386,8 +7386,8 @@ func (p *AdminAddCourseInfoRequest) field3Length() int {
 
 func (p *AdminAddCourseInfoRequest) field4Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("Credit", thrift.STRING, 4)
-	l += bthrift.Binary.StringLengthNocopy(p.Credit)
+	l += bthrift.Binary.FieldBeginLength("Credit", thrift.DOUBLE, 4)
+	l += bthrift.Binary.DoubleLength(p.Credit)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

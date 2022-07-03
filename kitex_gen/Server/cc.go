@@ -8627,10 +8627,10 @@ func (p *AdminDeleteTeacherInfoResponse) Field1DeepEqual(src string) bool {
 }
 
 type AdminAddCourseInfoRequest struct {
-	CourseId   string `thrift:"CourseId,1,required" json:"CourseId"`
-	CourseName string `thrift:"CourseName,2,required" json:"CourseName"`
-	TeacherId  string `thrift:"TeacherId,3,required" json:"TeacherId"`
-	Credit     string `thrift:"Credit,4,required" json:"Credit"`
+	CourseId   string  `thrift:"CourseId,1,required" json:"CourseId"`
+	CourseName string  `thrift:"CourseName,2,required" json:"CourseName"`
+	TeacherId  string  `thrift:"TeacherId,3,required" json:"TeacherId"`
+	Credit     float64 `thrift:"Credit,4,required" json:"Credit"`
 }
 
 func NewAdminAddCourseInfoRequest() *AdminAddCourseInfoRequest {
@@ -8649,7 +8649,7 @@ func (p *AdminAddCourseInfoRequest) GetTeacherId() (v string) {
 	return p.TeacherId
 }
 
-func (p *AdminAddCourseInfoRequest) GetCredit() (v string) {
+func (p *AdminAddCourseInfoRequest) GetCredit() (v float64) {
 	return p.Credit
 }
 func (p *AdminAddCourseInfoRequest) SetCourseId(val string) {
@@ -8661,7 +8661,7 @@ func (p *AdminAddCourseInfoRequest) SetCourseName(val string) {
 func (p *AdminAddCourseInfoRequest) SetTeacherId(val string) {
 	p.TeacherId = val
 }
-func (p *AdminAddCourseInfoRequest) SetCredit(val string) {
+func (p *AdminAddCourseInfoRequest) SetCredit(val float64) {
 	p.Credit = val
 }
 
@@ -8729,7 +8729,7 @@ func (p *AdminAddCourseInfoRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 4:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.DOUBLE {
 				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -8818,7 +8818,7 @@ func (p *AdminAddCourseInfoRequest) ReadField3(iprot thrift.TProtocol) error {
 }
 
 func (p *AdminAddCourseInfoRequest) ReadField4(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
+	if v, err := iprot.ReadDouble(); err != nil {
 		return err
 	} else {
 		p.Credit = v
@@ -8919,10 +8919,10 @@ WriteFieldEndError:
 }
 
 func (p *AdminAddCourseInfoRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Credit", thrift.STRING, 4); err != nil {
+	if err = oprot.WriteFieldBegin("Credit", thrift.DOUBLE, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Credit); err != nil {
+	if err := oprot.WriteDouble(p.Credit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -8984,9 +8984,9 @@ func (p *AdminAddCourseInfoRequest) Field3DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *AdminAddCourseInfoRequest) Field4DeepEqual(src string) bool {
+func (p *AdminAddCourseInfoRequest) Field4DeepEqual(src float64) bool {
 
-	if strings.Compare(p.Credit, src) != 0 {
+	if p.Credit != src {
 		return false
 	}
 	return true
