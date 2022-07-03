@@ -765,7 +765,7 @@ func (p *kClient) AddTeacher(ctx context.Context, req *server0.AdminAddTeacherIn
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) DeleteTeacher(ctx context.Context, req *server0.AdminDeleteTeacherInfoRequest) (r *server0.AdminDeleteStudentInfoResponse, err error) {
+func (p *kClient) DeleteTeacher(ctx context.Context, req *server0.AdminDeleteTeacherInfoRequest) (r *server0.AdminDeleteTeacherInfoResponse, err error) {
 	var _args server0.ServiceDeleteTeacherArgs
 	_args.Req = req
 	var _result server0.ServiceDeleteTeacherResult

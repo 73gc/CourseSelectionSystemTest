@@ -9543,7 +9543,7 @@ type Service interface {
 
 	AddTeacher(ctx context.Context, req *AdminAddTeacherInfoRequest) (r *AdminAddTeacherInfoResponse, err error)
 
-	DeleteTeacher(ctx context.Context, req *AdminDeleteTeacherInfoRequest) (r *AdminDeleteStudentInfoResponse, err error)
+	DeleteTeacher(ctx context.Context, req *AdminDeleteTeacherInfoRequest) (r *AdminDeleteTeacherInfoResponse, err error)
 
 	AddCourse(ctx context.Context, req *AdminAddCourseInfoRequest) (r *AdminAddCourseInfoResponse, err error)
 
@@ -9803,7 +9803,7 @@ func (p *ServiceClient) AddTeacher(ctx context.Context, req *AdminAddTeacherInfo
 	return _result.GetSuccess(), nil
 }
 
-func (p *ServiceClient) DeleteTeacher(ctx context.Context, req *AdminDeleteTeacherInfoRequest) (r *AdminDeleteStudentInfoResponse, err error) {
+func (p *ServiceClient) DeleteTeacher(ctx context.Context, req *AdminDeleteTeacherInfoRequest) (r *AdminDeleteTeacherInfoResponse, err error) {
 	var _args ServiceDeleteTeacherArgs
 	_args.Req = req
 	var _result ServiceDeleteTeacherResult
@@ -11022,7 +11022,7 @@ func (p *serviceProcessorDeleteTeacher) Process(ctx context.Context, seqId int32
 	iprot.ReadMessageEnd()
 	var err2 error
 	result := ServiceDeleteTeacherResult{}
-	var retval *AdminDeleteStudentInfoResponse
+	var retval *AdminDeleteTeacherInfoResponse
 	if retval, err2 = p.handler.DeleteTeacher(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing DeleteTeacher: "+err2.Error())
 		oprot.WriteMessageBegin("DeleteTeacher", thrift.EXCEPTION, seqId)
@@ -18856,23 +18856,23 @@ func (p *ServiceDeleteTeacherArgs) Field1DeepEqual(src *AdminDeleteTeacherInfoRe
 }
 
 type ServiceDeleteTeacherResult struct {
-	Success *AdminDeleteStudentInfoResponse `thrift:"success,0" json:"success,omitempty"`
+	Success *AdminDeleteTeacherInfoResponse `thrift:"success,0" json:"success,omitempty"`
 }
 
 func NewServiceDeleteTeacherResult() *ServiceDeleteTeacherResult {
 	return &ServiceDeleteTeacherResult{}
 }
 
-var ServiceDeleteTeacherResult_Success_DEFAULT *AdminDeleteStudentInfoResponse
+var ServiceDeleteTeacherResult_Success_DEFAULT *AdminDeleteTeacherInfoResponse
 
-func (p *ServiceDeleteTeacherResult) GetSuccess() (v *AdminDeleteStudentInfoResponse) {
+func (p *ServiceDeleteTeacherResult) GetSuccess() (v *AdminDeleteTeacherInfoResponse) {
 	if !p.IsSetSuccess() {
 		return ServiceDeleteTeacherResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *ServiceDeleteTeacherResult) SetSuccess(x interface{}) {
-	p.Success = x.(*AdminDeleteStudentInfoResponse)
+	p.Success = x.(*AdminDeleteTeacherInfoResponse)
 }
 
 var fieldIDToName_ServiceDeleteTeacherResult = map[int16]string{
@@ -18943,7 +18943,7 @@ ReadStructEndError:
 }
 
 func (p *ServiceDeleteTeacherResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewAdminDeleteStudentInfoResponse()
+	p.Success = NewAdminDeleteTeacherInfoResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}
@@ -19017,7 +19017,7 @@ func (p *ServiceDeleteTeacherResult) DeepEqual(ano *ServiceDeleteTeacherResult) 
 	return true
 }
 
-func (p *ServiceDeleteTeacherResult) Field0DeepEqual(src *AdminDeleteStudentInfoResponse) bool {
+func (p *ServiceDeleteTeacherResult) Field0DeepEqual(src *AdminDeleteTeacherInfoResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

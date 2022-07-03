@@ -34,7 +34,7 @@ type Client interface {
 	AddStudent(ctx context.Context, req *server0.AdminAddStudentInfoRequest, callOptions ...callopt.Option) (r *server0.AdminAddStudentInfoResponse, err error)
 	DeleteStudent(ctx context.Context, req *server0.AdminDeleteStudentInfoRequest, callOptions ...callopt.Option) (r *server0.AdminDeleteStudentInfoResponse, err error)
 	AddTeacher(ctx context.Context, req *server0.AdminAddTeacherInfoRequest, callOptions ...callopt.Option) (r *server0.AdminAddTeacherInfoResponse, err error)
-	DeleteTeacher(ctx context.Context, req *server0.AdminDeleteTeacherInfoRequest, callOptions ...callopt.Option) (r *server0.AdminDeleteStudentInfoResponse, err error)
+	DeleteTeacher(ctx context.Context, req *server0.AdminDeleteTeacherInfoRequest, callOptions ...callopt.Option) (r *server0.AdminDeleteTeacherInfoResponse, err error)
 	AddCourse(ctx context.Context, req *server0.AdminAddCourseInfoRequest, callOptions ...callopt.Option) (r *server0.AdminAddCourseInfoResponse, err error)
 	DeleteCourse(ctx context.Context, req *server0.AdminDeleteCourseInfoRequest, callOptions ...callopt.Option) (r *server0.AdminDeleteCourseInfoResponse, err error)
 }
@@ -183,7 +183,7 @@ func (p *kServiceClient) AddTeacher(ctx context.Context, req *server0.AdminAddTe
 	return p.kClient.AddTeacher(ctx, req)
 }
 
-func (p *kServiceClient) DeleteTeacher(ctx context.Context, req *server0.AdminDeleteTeacherInfoRequest, callOptions ...callopt.Option) (r *server0.AdminDeleteStudentInfoResponse, err error) {
+func (p *kServiceClient) DeleteTeacher(ctx context.Context, req *server0.AdminDeleteTeacherInfoRequest, callOptions ...callopt.Option) (r *server0.AdminDeleteTeacherInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteTeacher(ctx, req)
 }

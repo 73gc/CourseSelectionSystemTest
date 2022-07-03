@@ -234,7 +234,7 @@ service Service {
     AdminAddStudentInfoResponse AddStudent(1: AdminAddStudentInfoRequest req) // 添加学生
     AdminDeleteStudentInfoResponse DeleteStudent(1: AdminDeleteStudentInfoRequest req) // 删除学生
     AdminAddTeacherInfoResponse AddTeacher(1: AdminAddTeacherInfoRequest req) // 添加教师
-    AdminDeleteStudentInfoResponse DeleteTeacher(1: AdminDeleteTeacherInfoRequest req) // 删除教师
+    AdminDeleteTeacherInfoResponse DeleteTeacher(1: AdminDeleteTeacherInfoRequest req) // 删除教师
     AdminAddCourseInfoResponse AddCourse(1: AdminAddCourseInfoRequest req) // 添加教程
     AdminDeleteCourseInfoResponse DeleteCourse(1: AdminDeleteCourseInfoRequest req) // 删除课程
 }

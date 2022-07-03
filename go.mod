@@ -2,10 +2,8 @@ module courseselection
 
 go 1.18
 
-replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
-
 require (
-	github.com/apache/thrift v0.13.0
+	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.2
 )
 
@@ -29,3 +27,5 @@ require (
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
+
+replace github.com/apache/thrift => github.com/apache/thrift v0.13.0

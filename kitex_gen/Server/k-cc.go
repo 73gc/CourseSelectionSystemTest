@@ -13706,7 +13706,7 @@ ReadStructEndError:
 
 func (p *ServiceDeleteTeacherResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	p.Success = NewAdminDeleteStudentInfoResponse()
+	p.Success = NewAdminDeleteTeacherInfoResponse()
 	if l, err := p.Success.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
