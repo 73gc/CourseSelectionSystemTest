@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
+	server "courseselection/kitex_gen/Server"
 	"courseselection/kitex_gen/Server/service"
+	"fmt"
 	"log"
 
 	"github.com/cloudwego/kitex/client"
@@ -177,4 +180,39 @@ func main() {
 	// 	return
 	// }
 	// fmt.Println(resp)
+
+	// 测试学生评教接口
+	// req := &server.StudentEvaluateRequest{
+	// 	StudentId: "01907010109",
+	// 	CourseId:  "22070304001",
+	// 	Score:     100,
+	// }
+	// resp, err := cli.EvaluateRequest(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp.Message)
+
+	// 测试向老师展示未录入成绩课程接口
+	// req := &server.TeacherQueryCourseRequest{
+	// 	TeacherId: "22070302001",
+	// }
+	// resp, err := cli.ShowCourseToTeacher(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
+
+	// 测试向老师展示未录入成绩的学生的信息
+	req := &server.ShowStudentInfoRequest{
+		CourseId: "22070304001",
+	}
+	resp, err := cli.ShowStudentInfo(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	fmt.Println(resp)
 }
