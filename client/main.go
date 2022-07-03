@@ -225,4 +225,39 @@ func main() {
 	// 	return
 	// }
 	// fmt.Println(resp.Message)
+
+	// 测试向老师展示已录入成绩课程接口
+	// req := &server.TeacherQueryCourseRequest{
+	// 	TeacherId: "22070302001",
+	// }
+	// resp, err := cli.ModifyShowCourse(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
+
+	// 测试向老师展示已录入成绩的学生的信息
+	// req := &server.ShowStudentInfoRequest{
+	// 	CourseId: "22070304001",
+	// }
+	// resp, err := cli.ModifyShowStudent(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
+
+	// 测试老师修改成绩接口
+	// req := &server.TeacherModifyScoreRequest{
+	// 	StudentId: "01907010109",
+	// 	CourseId:  "22070304001",
+	// 	Score:     80,
+	// }
+	// resp, err := cli.ModifyScore(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp.Message)
 }
