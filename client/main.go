@@ -155,4 +155,26 @@ func main() {
 	// 	log.Println(err.Error())
 	// }
 	// fmt.Println(resp.Message)
+
+	// 测试学生查询成绩接口
+	// req := &server.StudentQueryScoreRequest{
+	// 	StudentId: "01907010109",
+	// }
+	// resp, err := cli.QueryScore(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
+
+	// 测试学生查询选课信息接口
+	// req := &server.StudentQuerySelectionRequest{
+	// 	StudentId: "01907010109",
+	// }
+	// resp, err := cli.QuerySelection(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
 }

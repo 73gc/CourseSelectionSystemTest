@@ -69,6 +69,7 @@ struct StudentQuerySelectionResponse {
 struct StudentEvaluateRequest {
     1: required string StudentId
     2: required string CourseId
+    3: required double Score
 }
 
 struct StudentEvaluateResponse {

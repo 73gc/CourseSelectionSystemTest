@@ -3056,8 +3056,9 @@ func (p *StudentQuerySelectionResponse) Field1DeepEqual(src []*ShowCourseRespons
 }
 
 type StudentEvaluateRequest struct {
-	StudentId string `thrift:"StudentId,1,required" json:"StudentId"`
-	CourseId  string `thrift:"CourseId,2,required" json:"CourseId"`
+	StudentId string  `thrift:"StudentId,1,required" json:"StudentId"`
+	CourseId  string  `thrift:"CourseId,2,required" json:"CourseId"`
+	Score     float64 `thrift:"Score,3,required" json:"Score"`
 }
 
 func NewStudentEvaluateRequest() *StudentEvaluateRequest {
@@ -3071,16 +3072,24 @@ func (p *StudentEvaluateRequest) GetStudentId() (v string) {
 func (p *StudentEvaluateRequest) GetCourseId() (v string) {
 	return p.CourseId
 }
+
+func (p *StudentEvaluateRequest) GetScore() (v float64) {
+	return p.Score
+}
 func (p *StudentEvaluateRequest) SetStudentId(val string) {
 	p.StudentId = val
 }
 func (p *StudentEvaluateRequest) SetCourseId(val string) {
 	p.CourseId = val
 }
+func (p *StudentEvaluateRequest) SetScore(val float64) {
+	p.Score = val
+}
 
 var fieldIDToName_StudentEvaluateRequest = map[int16]string{
 	1: "StudentId",
 	2: "CourseId",
+	3: "Score",
 }
 
 func (p *StudentEvaluateRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -3089,6 +3098,7 @@ func (p *StudentEvaluateRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	var issetStudentId bool = false
 	var issetCourseId bool = false
+	var issetScore bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -3126,6 +3136,17 @@ func (p *StudentEvaluateRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 3:
+			if fieldTypeId == thrift.DOUBLE {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetScore = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -3147,6 +3168,11 @@ func (p *StudentEvaluateRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetCourseId {
 		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetScore {
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -3185,6 +3211,15 @@ func (p *StudentEvaluateRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *StudentEvaluateRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadDouble(); err != nil {
+		return err
+	} else {
+		p.Score = v
+	}
+	return nil
+}
+
 func (p *StudentEvaluateRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("StudentEvaluateRequest"); err != nil {
@@ -3197,6 +3232,10 @@ func (p *StudentEvaluateRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -3252,6 +3291,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
+func (p *StudentEvaluateRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("Score", thrift.DOUBLE, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteDouble(p.Score); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
 func (p *StudentEvaluateRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -3271,6 +3327,9 @@ func (p *StudentEvaluateRequest) DeepEqual(ano *StudentEvaluateRequest) bool {
 	if !p.Field2DeepEqual(ano.CourseId) {
 		return false
 	}
+	if !p.Field3DeepEqual(ano.Score) {
+		return false
+	}
 	return true
 }
 
@@ -3284,6 +3343,13 @@ func (p *StudentEvaluateRequest) Field1DeepEqual(src string) bool {
 func (p *StudentEvaluateRequest) Field2DeepEqual(src string) bool {
 
 	if strings.Compare(p.CourseId, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *StudentEvaluateRequest) Field3DeepEqual(src float64) bool {
+
+	if p.Score != src {
 		return false
 	}
 	return true

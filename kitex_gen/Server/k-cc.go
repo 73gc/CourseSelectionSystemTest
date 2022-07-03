@@ -2515,6 +2515,7 @@ func (p *StudentEvaluateRequest) FastRead(buf []byte) (int, error) {
 	var fieldId int16
 	var issetStudentId bool = false
 	var issetCourseId bool = false
+	var issetScore bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -2561,6 +2562,21 @@ func (p *StudentEvaluateRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 3:
+			if fieldTypeId == thrift.DOUBLE {
+				l, err = p.FastReadField3(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetScore = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -2588,6 +2604,11 @@ func (p *StudentEvaluateRequest) FastRead(buf []byte) (int, error) {
 
 	if !issetCourseId {
 		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetScore {
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -2635,6 +2656,20 @@ func (p *StudentEvaluateRequest) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *StudentEvaluateRequest) FastReadField3(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadDouble(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.Score = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *StudentEvaluateRequest) FastWrite(buf []byte) int {
 	return 0
@@ -2644,6 +2679,7 @@ func (p *StudentEvaluateRequest) FastWriteNocopy(buf []byte, binaryWriter bthrif
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "StudentEvaluateRequest")
 	if p != nil {
+		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
@@ -2658,6 +2694,7 @@ func (p *StudentEvaluateRequest) BLength() int {
 	if p != nil {
 		l += p.field1Length()
 		l += p.field2Length()
+		l += p.field3Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -2682,6 +2719,15 @@ func (p *StudentEvaluateRequest) fastWriteField2(buf []byte, binaryWriter bthrif
 	return offset
 }
 
+func (p *StudentEvaluateRequest) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Score", thrift.DOUBLE, 3)
+	offset += bthrift.Binary.WriteDouble(buf[offset:], p.Score)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *StudentEvaluateRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("StudentId", thrift.STRING, 1)
@@ -2695,6 +2741,15 @@ func (p *StudentEvaluateRequest) field2Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("CourseId", thrift.STRING, 2)
 	l += bthrift.Binary.StringLengthNocopy(p.CourseId)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *StudentEvaluateRequest) field3Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("Score", thrift.DOUBLE, 3)
+	l += bthrift.Binary.DoubleLength(p.Score)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
