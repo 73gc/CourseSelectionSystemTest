@@ -201,7 +201,7 @@ func (s *Admin) addStudent() {
 
 func getIdentity() int {
 	var identity int
-	fmt.Println("用户身份(1教师/2学生): ")
+	fmt.Printf("用户身份(1教师/2学生): ")
 	fmt.Scanf("%d", &identity)
 	return identity
 }
@@ -221,7 +221,7 @@ func (s *Admin) AddUser() {
 }
 
 func chooseTeacher() int {
-	fmt.Println("选择教师序号: ")
+	fmt.Printf("选择教师序号: ")
 	var op int
 	fmt.Scanf("%d", &op)
 	return op
@@ -261,7 +261,7 @@ func (s *Admin) deleteTeacher() {
 
 func chooseStudent() int {
 	var op int
-	fmt.Println("选择学生的序号: ")
+	fmt.Printf("选择学生的序号: ")
 	fmt.Scanf("%d", &op)
 	return op
 }
@@ -322,7 +322,7 @@ func (s *UI) AdminUI() bool {
 	fmt.Println("5. 修改课程")
 	fmt.Println("0. 退出")
 	op := ChooseOp()
-	for ; op < 0 || op > 1; op = ChooseOp() {
+	for ; op < 0 || op > 5; op = ChooseOp() {
 		fmt.Println("无效操作，请重新选择")
 	}
 	switch op {
@@ -331,6 +331,8 @@ func (s *UI) AdminUI() bool {
 		return true
 	case 2:
 		admin.AddUser()
+	case 3:
+		admin.DeleteUser()
 	case 0:
 		return true
 	}
