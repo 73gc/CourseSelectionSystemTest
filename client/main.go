@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/cloudwego/kitex/client"
+	"github.com/gosuri/uitable"
 	"github.com/howeyc/gopass"
 )
 
@@ -31,6 +32,7 @@ var teacher *Teacher
 var student *Student
 
 var Authority int32
+var Usrid string
 
 func Clear() {
 	switch runtime.GOOS {
@@ -78,36 +80,299 @@ func (s *User) ChangePassword(Username, NewPassword string) string {
 	return resp.Message
 }
 
-// func getPassword() string {
-// 	var Password string
-// 	fmt.Scanf("%s", &Password)
-// 	for i := 0; i < len(Password); i++ {
-// 		fmt.Printf("\b")
-// 	}
-// 	for i := 0; i < len(Password); i++ {
-// 		fmt.Printf("*")
-// 	}
-// 	return Password
-// }
-
 func (s *UI) LoginUI() {
 	Clear()
 	var Username, Password string
 	fmt.Printf("用户名: ")
 	fmt.Scanf("%s", &Username)
+	Usrid = Username
 	passwd, _ := gopass.GetPasswdPrompt("密码: ", true, os.Stdin, os.Stdout)
 	Password = string(passwd)
 	var Message string
 	Message = user.Login(Username, Password)
 	fmt.Println(Message)
-	if Message == "登陆成功" {
+	if Message == "登录成功" {
 		time.Sleep(5 * time.Second)
-		return
+		switch Authority {
+		case 1:
+			for {
+				ex := s.AdminUI()
+				if ex {
+					return
+				}
+			}
+		case 2:
+			for {
+				ex := s.TeacherUI()
+				if ex {
+					return
+				}
+			}
+		case 3:
+			for {
+				ex := s.StudentUI()
+				if ex {
+					return
+				}
+			}
+		}
 	} else {
 		time.Sleep(5 * time.Second)
 		s.LoginUI()
+	}
+	return
+}
+
+func (s *UI) ChangePasswdUI() {
+	Clear()
+	oldPasswd, _ := gopass.GetPasswdPrompt("原密码: ", true, os.Stdin, os.Stdout)
+	newPasswd, _ := gopass.GetPasswdPrompt("新密码: ", true, os.Stdin, os.Stdout)
+	ReNewPasswd, _ := gopass.GetPasswdPrompt("确认新密码", true, os.Stdin, os.Stdout)
+	if string(newPasswd) != string(ReNewPasswd) {
+		fmt.Println("两次输入密码不一致")
+		time.Sleep(5 * time.Second)
 		return
 	}
+	resp := user.Login(Usrid, string(oldPasswd))
+	if resp != "登录成功" {
+		fmt.Println("原密码错误")
+		time.Sleep(5 * time.Second)
+		return
+	}
+	Message := user.ChangePassword(Usrid, string(newPasswd))
+	if Message != "修改成功" {
+		fmt.Println(Message)
+		return
+	}
+	fmt.Println("修改成功")
+	time.Sleep(5 * time.Second)
+	return
+}
+
+func ChooseOp() int {
+	fmt.Printf("选择你要进行的操作: ")
+	var op int
+	fmt.Scanf("%d", &op)
+	return op
+}
+
+func (s *Admin) addTeacher() {
+	Clear()
+	// 测试管理员添加教师接口
+	var teacherId, teacherName string
+	fmt.Println("输入职工号: ")
+	fmt.Scanf("%s", &teacherId)
+	fmt.Println("输入教师姓名: ")
+	fmt.Scanf("%s", &teacherName)
+	req := &server.AdminAddTeacherInfoRequest{
+		TeacherId:   teacherId,
+		TeacherName: teacherName,
+	}
+	resp, err := cli.AddTeacher(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	fmt.Println(resp.Message)
+}
+
+func (s *Admin) addStudent() {
+	Clear()
+	// 测试管理员添加学生接口
+	var studentId, studentName, studentClass string
+	fmt.Println("输入学号: ")
+	fmt.Scanf("%s", &studentId)
+	fmt.Println("输入学生姓名: ")
+	fmt.Scanf("%s", &studentName)
+	fmt.Println("输入班级: ")
+	fmt.Scanf("%s", &studentClass)
+	req := &server.AdminAddStudentInfoRequest{
+		StudentId:     studentId,
+		StudentName:   studentName,
+		ClassAndGrade: studentClass,
+	}
+	resp, err := cli.AddStudent(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	fmt.Println(resp.Message)
+}
+
+func getIdentity() int {
+	var identity int
+	fmt.Println("用户身份(1教师/2学生): ")
+	fmt.Scanf("%d", &identity)
+	return identity
+}
+
+func (s *Admin) AddUser() {
+	Clear()
+	identity := getIdentity()
+	for ; identity < 1 || identity > 2; identity = getIdentity() {
+		fmt.Println("无效身份, 请重新输入")
+	}
+	if identity == 1 {
+		s.addTeacher()
+	} else {
+		s.addStudent()
+	}
+	time.Sleep(3 * time.Second)
+}
+
+func chooseTeacher() int {
+	fmt.Println("选择教师序号: ")
+	var op int
+	fmt.Scanf("%d", &op)
+	return op
+}
+
+func (s *Admin) deleteTeacher() {
+	Clear()
+	// 测试管理员查询教师信息接口
+	resp1, err := cli.QueryTeacherInfo(context.Background())
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	table := uitable.New()
+	table.MaxColWidth = 50
+	table.AddRow("", "教师职工号", "教师姓名")
+	for i, v := range resp1.Teachers {
+		table.AddRow(i+1, v.TeacherId, v.TeacherName)
+	}
+	fmt.Println(table)
+	tCount := len(resp1.Teachers)
+	op := chooseTeacher()
+	for ; op < 1 || op > tCount; op = chooseTeacher() {
+		fmt.Println("教师不存在, 请重新选择")
+	}
+	// 测试管理员删除教师接口
+	req := &server.AdminDeleteTeacherInfoRequest{
+		TeacherId: resp1.Teachers[op-1].TeacherId,
+	}
+	resp, err := cli.DeleteTeacher(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	fmt.Println(resp.Message)
+}
+
+func chooseStudent() int {
+	var op int
+	fmt.Println("选择学生的序号: ")
+	fmt.Scanf("%d", &op)
+	return op
+}
+
+func (s *Admin) deleteStudent() {
+	Clear()
+	// 测试管理员查询学生信息接口
+	resp1, err := cli.QueryStudentInfo(context.Background())
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	table := uitable.New()
+	table.MaxColWidth = 50
+	table.AddRow("", "学号", "姓名", "班级")
+	for i, v := range resp1.Students {
+		table.AddRow(i+1, v.StudentId, v.StudentName, v.ClassAndGrade)
+	}
+	fmt.Println(table)
+	sCount := len(resp1.Students)
+	op := chooseStudent()
+	for ; op < 1 || op > sCount; op = chooseStudent() {
+		fmt.Println("学生不存在, 请重新选择")
+	}
+	// 测试管理员删除学生接口
+	req := &server.AdminDeleteStudentInfoRequest{
+		StudentId: resp1.Students[op-1].StudentId,
+	}
+	resp, err := cli.DeleteStudent(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	fmt.Println(resp.Message)
+}
+
+func (s *Admin) DeleteUser() {
+	Clear()
+	identity := getIdentity()
+	for ; identity < 1 || identity > 2; identity = getIdentity() {
+		fmt.Println("无效身份, 请重新输入")
+	}
+	if identity == 1 {
+		s.deleteTeacher()
+	} else {
+		s.deleteStudent()
+	}
+	time.Sleep(3 * time.Second)
+}
+
+func (s *UI) AdminUI() bool {
+	Clear()
+	fmt.Println("管理员用户: ", Usrid)
+	fmt.Println("1. 修改密码")
+	fmt.Println("2. 添加用户")
+	fmt.Println("3. 删除用户")
+	fmt.Println("4. 添加课程")
+	fmt.Println("5. 修改课程")
+	fmt.Println("0. 退出")
+	op := ChooseOp()
+	for ; op < 0 || op > 1; op = ChooseOp() {
+		fmt.Println("无效操作，请重新选择")
+	}
+	switch op {
+	case 1:
+		ui.ChangePasswdUI()
+		return true
+	case 2:
+		admin.AddUser()
+	case 0:
+		return true
+	}
+	return false
+}
+
+func (s *UI) TeacherUI() bool {
+	Clear()
+	fmt.Println("教师用户: ", Usrid)
+	fmt.Println("1. 修改密码")
+	fmt.Println("0. 退出")
+	op := ChooseOp()
+	for ; op < 0 || op > 1; op = ChooseOp() {
+		fmt.Println("无效操作，请重新选择")
+	}
+	switch op {
+	case 1:
+		ui.ChangePasswdUI()
+		return true
+	case 0:
+		return true
+	}
+	return false
+}
+
+func (s *UI) StudentUI() bool {
+	Clear()
+	fmt.Println("学生用户: ", Usrid)
+	fmt.Println("1. 修改密码")
+	fmt.Println("0. 退出")
+	op := ChooseOp()
+	for ; op < 0 || op > 1; op = ChooseOp() {
+		fmt.Println("无效操作，请重新选择")
+	}
+	switch op {
+	case 1:
+		ui.ChangePasswdUI()
+		return true
+	case 0:
+		return true
+	}
+	return false
 }
 
 func main() {
@@ -123,22 +388,6 @@ func main() {
 	student = &Student{}
 	ui.LoginUI()
 
-	// 测试管理员查询学生信息接口
-	// resp, err := cli.QueryStudentInfo(context.Background())
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp)
-
-	// 测试管理员查询教师信息接口
-	// resp, err := cli.QueryTeacherInfo(context.Background())
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp)
-
 	// 测试管理员查询课程信息接口
 	// resp, err := cli.QueryCourseInfo(context.Background())
 	// if err != nil {
@@ -146,53 +395,6 @@ func main() {
 	// 	return
 	// }
 	// fmt.Println(resp)
-
-	// 测试管理员添加学生接口
-	// req := &server.AdminAddStudentInfoRequest{
-	// 	StudentId:     "22070303001",
-	// 	StudentName:   "张同学",
-	// 	ClassAndGrade: "1902",
-	// }
-	// resp, err := cli.AddStudent(context.Background(), req)
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp.Message)
-
-	// 测试管理员删除学生接口
-	// req := &server.AdminDeleteStudentInfoRequest{
-	// 	StudentId: "22070303001",
-	// }
-	// resp, err := cli.DeleteStudent(context.Background(), req)
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp.Message)
-
-	// 测试管理员添加教师接口
-	// req := &server.AdminAddTeacherInfoRequest{
-	// 	TeacherId:   "22070302002",
-	// 	TeacherName: "教师2",
-	// }
-	// resp, err := cli.AddTeacher(context.Background(), req)
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp.Message)
-
-	// 测试管理员删除教师接口
-	// req := &server.AdminDeleteTeacherInfoRequest{
-	// 	TeacherId: "22070302002",
-	// }
-	// resp, err := cli.DeleteTeacher(context.Background(), req)
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp.Message)
 
 	// 测试管理员添加课程接口
 	// req := &server.AdminAddCourseInfoRequest{
