@@ -1,42 +1,127 @@
 package main
 
 import (
+	"context"
+	server "courseselection/kitex_gen/Server"
 	"courseselection/kitex_gen/Server/service"
+	"fmt"
 	"log"
+	"os"
+	"os/exec"
+	"runtime"
+	"time"
 
 	"github.com/cloudwego/kitex/client"
+	"github.com/howeyc/gopass"
 )
 
+var cli service.Client
+var err error
+
+type User struct{}
+type Admin struct{}
+type Teacher struct{}
+type Student struct{}
+type UI struct{}
+
+var ui *UI
+var user *User
+var admin *Admin
+var teacher *Teacher
+var student *Student
+
+var Authority int32
+
+func Clear() {
+	switch runtime.GOOS {
+	case "linux":
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	case "windows":
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+}
+
+func (s *User) Login(Username, Password string) string {
+	// 登录接口测试
+	req := &server.LoginRequest{
+		Username: Username,
+		Password: Password,
+	}
+	resp, err := cli.Login(context.Background(), req)
+	if resp.Authority == nil {
+		Authority = -1
+	} else {
+		Authority = *resp.Authority
+	}
+	if err != nil {
+		log.Println(err.Error())
+		return resp.Message
+	}
+	return resp.Message
+}
+
+func (s *User) ChangePassword(Username, NewPassword string) string {
+	// 修改密码接口测试
+	req := &server.ChangePasswordRequenst{
+		Username:     Username,
+		NewPassword_: NewPassword,
+	}
+	resp, err := cli.ChangePassword(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return resp.Message
+	}
+	return resp.Message
+}
+
+// func getPassword() string {
+// 	var Password string
+// 	fmt.Scanf("%s", &Password)
+// 	for i := 0; i < len(Password); i++ {
+// 		fmt.Printf("\b")
+// 	}
+// 	for i := 0; i < len(Password); i++ {
+// 		fmt.Printf("*")
+// 	}
+// 	return Password
+// }
+
+func (s *UI) LoginUI() {
+	Clear()
+	var Username, Password string
+	fmt.Printf("用户名: ")
+	fmt.Scanf("%s", &Username)
+	passwd, _ := gopass.GetPasswdPrompt("密码: ", true, os.Stdin, os.Stdout)
+	Password = string(passwd)
+	var Message string
+	Message = user.Login(Username, Password)
+	fmt.Println(Message)
+	if Message == "登陆成功" {
+		time.Sleep(5 * time.Second)
+		return
+	} else {
+		time.Sleep(5 * time.Second)
+		s.LoginUI()
+		return
+	}
+}
+
 func main() {
-	cli, err := service.NewClient("course.selection", client.WithHostPorts("0.0.0.0:8888"))
+	cli, err = service.NewClient("course.selection", client.WithHostPorts("0.0.0.0:8888"))
 	if err != nil {
 		log.Println(err.Error())
 		return
 	}
-	// 登录接口测试
-	// req := &server.LoginRequest{
-	// 	Username: "22070303001",
-	// 	Password: "22070303001",
-	// }
-	// resp, err := cli.Login(context.Background(), req)
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp.Message)
-	// fmt.Println(*resp.Authority)
-
-	// 修改密码接口测试
-	// req := &server.ChangePasswordRequenst{
-	// 	Username:     "22070301001",
-	// 	NewPassword_: "acmicpc",
-	// }
-	// resp, err := cli.ChangePassword(context.Background(), req)
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	return
-	// }
-	// fmt.Println(resp.Message)
+	ui = &UI{}
+	user = &User{}
+	admin = &Admin{}
+	teacher = &Teacher{}
+	student = &Student{}
+	ui.LoginUI()
 
 	// 测试管理员查询学生信息接口
 	// resp, err := cli.QueryStudentInfo(context.Background())
@@ -260,4 +345,26 @@ func main() {
 	// 	return
 	// }
 	// fmt.Println(resp.Message)
+
+	// 测试教师查看选课信息接口
+	// req := &server.TeacherQueryCourseRequest{
+	// 	TeacherId: "22070302001",
+	// }
+	// resp, err := cli.ShowCourseSelection(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
+
+	// 测试教师查看选课学生接口
+	// req := &server.ShowStudentInfoRequest{
+	// 	CourseId: "22070304001",
+	// }
+	// resp, err := cli.StudentCourseSelection(context.Background(), req)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	return
+	// }
+	// fmt.Println(resp)
 }

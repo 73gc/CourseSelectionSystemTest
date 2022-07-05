@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.2
+	github.com/howeyc/gopass v0.0.0-20210920133722-c8aef6fb66ef
 )
 
 require (
@@ -19,6 +20,7 @@ require (
 	github.com/tidwall/gjson v1.9.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220110181412-a018aaa089fe // indirect
