@@ -653,10 +653,10 @@ func (s *Teacher) ModifyScore() {
 			for ; ops < 0 || ops > len(Students); ops = chooseStudent() {
 				fmt.Println("无效操作, 请重新选择")
 			}
-			if op == 0 {
+			if ops == 0 {
 				break
 			}
-			s.modifyScore(Courses[op-1].CourseId, Students[ops-1].StudentId)
+			s.modifyScore(Students[ops-1].StudentId, Courses[op-1].CourseId)
 		}
 	}
 }
@@ -814,10 +814,31 @@ func (s *Student) chooseTeacher() int {
 	return op
 }
 
+func (s *Student) showSelection() []*server.ShowCourseResponse {
+	Clear()
+	req := &server.StudentQuerySelectionRequest{
+		StudentId: Usrid,
+	}
+	resp, err := cli.QuerySelection(context.Background(), req)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
+	// fmt.Println(resp)
+	table := uitable.New()
+	table.MaxColWidth = 50
+	table.AddRow("序号", "课程名", "任课教师", "学分")
+	for i, v := range resp.Courses {
+		table.AddRow(i+1, v.CourseId, v.CourseName, v.TeacherName, v.Credit)
+	}
+	fmt.Println(table)
+	return resp.Courses
+}
+
 func (s *Student) Evaluate() {
 	Clear()
 	for {
-		Courses := s.showCourseToStudent()
+		Courses := s.showSelection()
 		op := s.chooseTeacher()
 		for ; op < 0 || op > len(Courses); op = s.chooseTeacher() {
 			fmt.Println("无效操作, 请重新选择")
@@ -829,8 +850,9 @@ func (s *Student) Evaluate() {
 		req := &server.StudentEvaluateRequest{
 			StudentId: Usrid,
 			CourseId:  Courses[op-1].CourseId,
-			Score:     100,
 		}
+		fmt.Printf("输入成绩: ")
+		fmt.Scanf("%g", &req.Score)
 		resp, err := cli.EvaluateRequest(context.Background(), req)
 		if err != nil {
 			log.Println(err.Error())
